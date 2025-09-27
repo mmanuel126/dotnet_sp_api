@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "IhIQl12Rud4=",
+  "success": true,
+  "projectFilePath": "/Users/marcmanuel/projects/api/dotnet_sp_api/dotnet_sp_api.csproj",
+  "expectedPackageFiles": [
+    "/Users/marcmanuel/.nuget/packages/microsoft.aspnetcore.openapi/9.0.1/microsoft.aspnetcore.openapi.9.0.1.nupkg.sha512",
+    "/Users/marcmanuel/.nuget/packages/microsoft.openapi/1.6.17/microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}
