@@ -1,11 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "IhIQl12Rud4=",
+  "dgSpecHash": "OkFtQyKgLPM=",
   "success": true,
   "projectFilePath": "/Users/marcmanuel/projects/api/dotnet_sp_api/dotnet_sp_api.csproj",
   "expectedPackageFiles": [
-    "/Users/marcmanuel/.nuget/packages/microsoft.aspnetcore.openapi/9.0.1/microsoft.aspnetcore.openapi.9.0.1.nupkg.sha512",
-    "/Users/marcmanuel/.nuget/packages/microsoft.openapi/1.6.17/microsoft.openapi.1.6.17.nupkg.sha512"
+    "/Users/marcmanuel/.nuget/packages/microsoft.aspnetcore.openapi/8.0.1/microsoft.aspnetcore.openapi.8.0.1.nupkg.sha512",
+    "/Users/marcmanuel/.nuget/packages/microsoft.openapi/1.4.3/microsoft.openapi.1.4.3.nupkg.sha512",
+    "/Users/marcmanuel/.nuget/packages/microsoft.netcore.app.ref/8.0.12/microsoft.netcore.app.ref.8.0.12.nupkg.sha512",
+    "/Users/marcmanuel/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.12/microsoft.aspnetcore.app.ref.8.0.12.nupkg.sha512",
+    "/Users/marcmanuel/.nuget/packages/microsoft.netcore.app.host.osx-arm64/8.0.12/microsoft.netcore.app.host.osx-arm64.8.0.12.nupkg.sha512"
   ],
   "logs": []
 }
