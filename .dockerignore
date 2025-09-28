@@ -1,0 +1,49 @@
+# Build artifacts
+
+bin/
+obj/
+
+# User-specific files
+
+_.user
+_.suo
+
+# VS Code and IDE settings
+
+.vscode/
+.idea/
+
+# .NET secrets, certificates
+
+_.pfx
+_.snk
+secrets.json
+
+# Environment files
+
+\*.env
+
+# Git files
+
+.git/
+.gitignore
+
+# Docker files (optional – only if you don't need them inside container)
+
+Dockerfile
+docker-compose.\*
+.dockerignore
+
+# Logs
+
+\*.log
+
+# Test results
+
+TestResults/
+\*.trx
+
+# Backup & temporary files
+
+_.bak
+_.tmp
