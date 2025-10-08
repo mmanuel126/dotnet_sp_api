@@ -1,12 +1,23 @@
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using dotnet_sp_api.Models.DBContextModels;
+using Microsoft.EntityFrameworkCore;
+using dotnet_sp_api.Configurations;
+using dotnet_sp_api.Interfaces;
+using dotnet_sp_api.Repositories.Interfaces;
+using dotnet_sp_api.Helpers;
+using dotnet_sp_api.Services.Implementations;
+using dotnet_sp_api.Services.Interfaces;
+using dotnet_sp_api.Repositories.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// register or bind encryption setting here  
+builder.Services.Configure<EncryptionSettings>(
+    builder.Configuration.GetSection("EncryptionSettings")
+);
 
 //Set cors (Cross Origin Resource Sharing) here - a mechanism (or an HTTP protocol) to allow web apps to access resources hosted on different domains or origins. 
 builder.Services.AddCors(options =>
@@ -21,6 +32,14 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddControllers();
+
+// Register PostgreSQL DbContext
+builder.Services.AddDbContext<DBContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQLConnection"),
+        npgsqlOptions =>
+        {
+            npgsqlOptions.EnableRetryOnFailure(); // optional
+        }));
 
 var sharedKey = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"]!);
 
@@ -45,9 +64,6 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 builder.Services.AddEndpointsApiExplorer(); //mainly used to setup swagger
-
-//Description = "RESTful API web service for the Sports Profile (SP) social networking application." +
-//       "<br/><br/>Author: Marc Manuel<br/><br/>To experiment with the API functionalities, please send email to <b>marc_manuel@hotmail.com</b> to obtain test account and instructions.",
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -122,6 +138,27 @@ builder.Services.AddLogging(lb =>
     //lb.AddFilter(loggingSection);
 });
 
+//register services for Dependency Injection (DI)
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddSingleton<Crypto>();
+
+builder.Services.AddScoped<ICommonRepository, CommonRepository>();
+builder.Services.AddScoped<ICommonService, CommonService>();
+
+builder.Services.AddScoped<IContactRepository, ContactRepository>();
+builder.Services.AddScoped<IContactService, ContactService>();
+
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<IMessageService, MessageService>();
+
+builder.Services.AddScoped<ISettingRepository, SettingRepository>();
+builder.Services.AddScoped<ISettingService, SettingService>();
+
+builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+builder.Services.AddScoped<IMemberService, MemberService>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -160,29 +197,3 @@ app.MapControllers();
 app.MapFallbackToFile("/index.html");
 
 app.Run();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
-//app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
