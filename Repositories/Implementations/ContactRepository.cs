@@ -117,6 +117,44 @@ namespace dotnet_sp_api.Repositories.Implementations
         /// <returns></returns>
         public List<MemberContacts> SearchMemberContacts(int memberID, string searchText)
         {
+            var cList = new List<MemberContacts>();
+            using (var command = _context.Database.GetDbConnection().CreateCommand())
+            {
+                // PostgreSQL functions are called with SELECT
+                command.CommandText = "SELECT * FROM public.sp_search_member_contacts(@p0,@p1)";
+                command.CommandType = CommandType.Text;
+
+                var memberIdParam = new Npgsql.NpgsqlParameter("p0", memberID);
+                command.Parameters.Add(memberIdParam);
+
+                var searchTextParam = new Npgsql.NpgsqlParameter("p1", searchText);
+                command.Parameters.Add(searchTextParam);
+
+                _context.Database.OpenConnection();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var pc = new MemberContacts
+                        {
+                            FriendName = reader["friend_name"]?.ToString()!,
+                            FirstName = reader["first_name"]?.ToString()!,
+                            Location = reader["location"]?.ToString()!,
+                            PicturePath = reader["picture_path"]?.ToString()!,
+                            ContactID = reader["contact_id"]?.ToString()!,
+                            ShowType = reader["show_type"]?.ToString()!,
+                            Status = reader["status"]?.ToString()!,
+                            TitleDesc = reader["title_desc"]?.ToString()!
+                        };
+
+                        cList.Add(pc);
+                    }
+                }
+                _context.Database.CloseConnection();
+            }
+            return cList;
+            /*
             var lst = (from mpf in _context.Tbmemberprofiles
                        join ct in _context.Tbcontacts on mpf.MemberId equals ct.ContactId
                        join mcti in _context.Tbmemberprofilecontactinfos on ct.ContactId equals mcti.MemberId
@@ -136,7 +174,7 @@ namespace dotnet_sp_api.Repositories.Implementations
                            Status = ct.Status.ToString(),
                            TitleDesc = mpf.TitleDesc ?? ""
                        }).ToList();
-            return lst;
+            return lst;*/
         }
 
         /// <summary>
@@ -396,6 +434,24 @@ namespace dotnet_sp_api.Repositories.Implementations
             var memberIdParam = new Npgsql.NpgsqlParameter("@MemberID", memberID);
             var followingMemberIdParam = new Npgsql.NpgsqlParameter("@FollowingMemberID", followingMemberId);
             _context.Database.ExecuteSqlRaw(sql, memberIdParam, followingMemberIdParam);
+        }
+
+        /// <summary>
+        /// Check to see if contact id is followin memberID.
+        /// </summary>
+        /// <param name="memberID"></param>
+        /// <param name="connectionID"></param>
+        /// <returns></returns>
+        public string IsFollowingContact(int memberID, int contactID)
+        {
+            var res = (from f in _context.Tbmemberfollowings
+                       where f.MemberId == memberID && f.FollowingMemberId == contactID
+                       select f).ToList();
+
+            if (res.Count == 0)
+                return "false";
+            else
+                return "true";
         }
 
         /// <summary>

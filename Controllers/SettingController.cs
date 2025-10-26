@@ -82,7 +82,7 @@ namespace dotnet_sp_api.Controllers
         /// <param name="body"></param>
         [HttpPut]
         [Authorize]
-        [Route("update-password_info")]
+        [Route("update-password-info")]
         public IActionResult SavePasswordInfo([FromBody] PasswordData body)
         {
             if (ModelState.IsValid)
@@ -104,7 +104,7 @@ namespace dotnet_sp_api.Controllers
         /// <param name="answer">Answer.</param>
         [HttpPut]
         [Authorize]
-        [Route("save-security_question/{memberID}")]
+        [Route("save-security-question/{memberID}")]
         public IActionResult SaveSecurityQuestionInfo([FromRoute] int memberID, [FromQuery] int questionID, [FromQuery] string answer)
         {
             if (ModelState.IsValid)

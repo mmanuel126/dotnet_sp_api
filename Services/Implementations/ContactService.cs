@@ -161,5 +161,16 @@ namespace dotnet_sp_api.Services.Implementations
         {
             _contactRepo.UnfollowMember(memberID, contactID);
         }
+
+        /// <summary>
+        /// check tos if member is following contact
+        /// </summary>
+        /// <returns><c>true</c>, if mem is following, <c>false</c> otherwise.</returns>
+        /// <param name="memberID">Member identifier.</param>
+        /// <param name="contactID">Contact identifier.</param>
+        public string IsFollowingContact(int memberID, int contactID)
+        {
+            return _contactRepo.IsFollowingContact(memberID, contactID);
+        }
     }
 }

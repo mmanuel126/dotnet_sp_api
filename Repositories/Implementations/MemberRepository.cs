@@ -17,12 +17,12 @@ namespace dotnet_sp_api.Services.Implementations
     {
         public void CreateMemberPost(int memberID, string postMsg)
         {
-            context.Database.ExecuteSqlRaw("CALL public.sp_create_member_post({0}, {1})", memberID, postMsg);
+            context.Database.ExecuteSqlRaw("SELECT public.sp_create_member_post({0}, {1})", memberID, postMsg);
         }
 
         public void CreateMemberPostResponse(int memberID, int postID, string postMsg)
         {
-            context.Database.ExecuteSqlRaw("CALL public.sp_create_post_comment({0}, {1}, {2})", memberID, postID, postMsg);
+            context.Database.ExecuteSqlRaw("SELECT public.sp_create_post_comment({0}, {1}, {2})", memberID, postID, postMsg);
         }
 
         public List<PostResponse> GetMemberPostResponses(int postID)
@@ -245,7 +245,7 @@ namespace dotnet_sp_api.Services.Implementations
                         var pub = context.Tbpublicschools.FirstOrDefault(p => p.Lgid == e.SchoolId);
                         if (pub != null)
                         {
-                            schoolName = pub.SchoolName ?? "";
+                            schoolName = pub.SchoolName ?? "Unknown Name";
                             address = $"{pub.StreetName}, {pub.City}, {pub.State} {pub.Zip}";
                         }
                         break;
@@ -410,11 +410,11 @@ namespace dotnet_sp_api.Services.Implementations
             {
                 MemberId = memberID,
                 SchoolId = Convert.ToInt32(body.SchoolID),
-                SchoolType = Convert.ToInt32(body.SchoolType),
+                SchoolType = int.TryParse(body.SchoolType, out int schoolType) ? schoolType : 0,
                 SchoolName = body.SchoolName,
                 ClassYear = body.YearClass,
                 Major = body.Major,
-                DegreeType = Convert.ToInt32(body.DegreeTypeID),
+                DegreeType = int.TryParse(body.DegreeTypeID, out int degreeType) ? degreeType : 0,
                 Societies = body.Societies,
                 SportLevelType = body.SportLevelType
             };
@@ -546,7 +546,8 @@ namespace dotnet_sp_api.Services.Implementations
                 vidModel.Title = item.Snippet.Title;
                 vidModel.Description = item.Snippet.Description;
                 vidModel.Etag = item.ETag;
-                vidModel.PublishedAt = Convert.ToDateTime(item.Snippet.PublishedAtDateTimeOffset).ToShortDateString();
+                vidModel.PublishedAt = item.Snippet.PublishedAtDateTimeOffset?.DateTime.ToShortDateString();
+                //vidModel.PublishedAt = Convert.ToDateTime(item.Snippet.PublishedAtDateTimeOffset).ToShortDateString();
                 vidModel.DefaultThumbnail = item.Snippet.Thumbnails.Default__.Url;
                 vidModel.DefaultThumbnailHeight = item.Snippet.Thumbnails.Default__.Height.ToString() ?? "0";
                 vidModel.DefaultThumbnailWidth = item.Snippet.Thumbnails.Default__.Width.ToString() ?? "0";

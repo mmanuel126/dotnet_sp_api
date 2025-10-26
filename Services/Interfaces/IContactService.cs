@@ -18,5 +18,6 @@ namespace dotnet_sp_api.Services.Interfaces
     void UnfollowMember(int memberID, int contactID);
     void FollowMember(int memberID, int contactID);
     List<MemberContacts> GetPeopleIFollow(int memberID);
+    string IsFollowingContact(int memberID, int contactID);
   }
 }

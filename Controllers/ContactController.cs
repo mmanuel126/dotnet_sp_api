@@ -303,5 +303,26 @@ namespace dotnet_sp_api.Controllers
                 return BadRequest(ModelState);
             }
         }
+
+        /// <summary>
+        /// check tos if member is following contact
+        /// </summary>
+        /// <returns><c>true</c>, if mem is following, <c>false</c> otherwise.</returns>
+        /// <param name="memberID">Member identifier.</param>
+        /// <param name="contactID">Contact identifier.</param>
+        [HttpGet]
+        [Authorize]
+        [Route("is-following-contact")]
+        public ActionResult<string> IsFollowingContact([FromQuery] int memberID, [FromQuery] int contactID)
+        {
+            if (ModelState.IsValid)
+            {
+                return Ok(_contactService.IsFollowingContact(memberID, contactID));
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+        }
     }
 }
